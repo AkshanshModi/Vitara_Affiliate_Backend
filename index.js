@@ -4,9 +4,17 @@ const dotenv = require('dotenv');
 const connectDB = require('./db');
 const authRoutes = require('./routes/auth');
 const os = require('os');
+const cors = require('cors');
 
 dotenv.config();
 const app = express();
+
+// Allow requests from React frontend (default: http://localhost:3000)
+app.use(cors({
+  origin: 'https://vitara-affiliate-backend.onrender.com', // or whatever your React app URL is
+  credentials: true,               // if using cookies/auth headers
+}));
+
 app.use(bodyParser.json());
 
 // Connect MongoDB
