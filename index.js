@@ -10,8 +10,12 @@ dotenv.config();
 const app = express();
 
 // Allow requests from React frontend (default: http://localhost:3000)
+const allowedOrigins = [
+  'http://localhost:3000', // React dev
+  'https://vitara-affiliate-backend.onrender.com', // replace with your actual frontend domain
+];
 app.use(cors({
-  origin: 'http://localhost:3000', // update this if your frontend runs elsewhere
+  origin: allowedOrigins,
   credentials: true,
 }));
 
