@@ -11,8 +11,8 @@ const app = express();
 
 // Allow requests from React frontend (default: http://localhost:3000)
 app.use(cors({
-  origin: 'https://vitara-affiliate-backend.onrender.com', // or whatever your React app URL is
-  credentials: true,               // if using cookies/auth headers
+  origin: 'http://localhost:3000', // update this if your frontend runs elsewhere
+  credentials: true,
 }));
 
 app.use(bodyParser.json());
