@@ -15,7 +15,19 @@ const allowedOrigins = [
   'https://vitara-affiliate-backend.onrender.com/', // replace with your actual frontend domain
   'https://kb01owfmq6ip.vitara.app/login',
 ];
-app.use(cors());
+const corsOpts = {
+  origin: '*',
+
+  methods: [
+    'GET',
+    'POST',
+  ],
+
+  allowedHeaders: [
+    'Content-Type',
+  ],
+};
+app.use(cors(corsOpts));
 // app.use(cors({
 //   origin: function (origin, callback) {
 //     if (!origin || allowedOrigins.includes(origin)) {
