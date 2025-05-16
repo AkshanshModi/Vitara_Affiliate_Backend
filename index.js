@@ -11,21 +11,20 @@ const app = express();
 
 // Allow requests from React frontend (default: http://localhost:3000)
 const allowedOrigins = [
-  'http://localhost:3000', // React dev
-  'https://vitara-affiliate-backend.onrender.com', // replace with your actual frontend domain
+  'http://localhost',
+  'https://vitara-affiliate-backend.onrender.com',
   'https://kb01owfmq6ip.vitara.app',
 ];
 const corsOpts = {
   origin: allowedOrigins,
-
   methods: [
     'GET',
     'POST',
   ],
-
   allowedHeaders: [
     'Content-Type',
   ],
+  credentials: true,
 };
 app.use(cors(corsOpts));
 // app.use(cors({
