@@ -16,11 +16,13 @@ const allowedOrigins = [
   'https://kb01owfmq6ip.vitara.app',
 ];
 const corsOpts = {
-  origin: "*",
+  origin: '*',
+
   methods: [
     'GET',
     'POST',
   ],
+
   allowedHeaders: [
     'Content-Type',
   ],
