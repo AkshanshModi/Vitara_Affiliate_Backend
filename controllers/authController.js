@@ -9,12 +9,23 @@ exports.register = async (req, res) => {
   const { email, password, full_name, phone } = req.body;
   console.log(req.body);
   try {
+    // Basic validation
+    if (full_name == "" || full_name == null){
+      return res.status(401).json({ error: 'Full name field is required' });
+    } else if (email == "" || email == null){
+      return res.status(401).json({ error: 'Email field is required' });
+    } else if (phone == "" || phone == null){
+      return res.status(401).json({ error: 'Phone number field is required' });
+    } else if (password == "" || password == null){
+      return res.status(401).json({ error: 'Password field is required' });
+    }
+
     const hashedPassword = await bcrypt.hash(password, 10);
     const user = new User({ email, password_hash: hashedPassword, full_name, phone });
     await user.save();
     res.status(201).json({ user });
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    res.status(401).json({ error: err.message });
   }
 };
 
