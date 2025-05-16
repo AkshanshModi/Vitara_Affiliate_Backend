@@ -11,7 +11,7 @@ const app = express();
 
 // Allow requests from React frontend (default: http://localhost:3000)
 const allowedOrigins = [
-  'http://localhost',
+  'http://localhost:3000',
   'https://vitara-affiliate-backend.onrender.com',
   'https://kb01owfmq6ip.vitara.app',
 ];
@@ -27,7 +27,7 @@ const corsOpts = {
     'Content-Type',
   ],
 };
-app.use(cors());
+app.use(cors(corsOpts));
 app.use(bodyParser.json());
 
 // Connect MongoDB
