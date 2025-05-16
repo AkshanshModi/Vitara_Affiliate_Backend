@@ -16,7 +16,7 @@ const allowedOrigins = [
   'https://kb01owfmq6ip.vitara.app',
 ];
 const corsOpts = {
-  origin: allowedOrigins,
+  origin: "*",
   methods: [
     'GET',
     'POST',
