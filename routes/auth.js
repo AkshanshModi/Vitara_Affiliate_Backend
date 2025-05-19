@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const authController = require('../controllers/authController');
 const authMiddleware = require('../middleware/authMiddleware');
+const authMiddlewareUpdate = require('../middleware/authMiddlewareUpdate');
 const userController = require('../controllers/userController');
 
 router.post('/register', authController.register);
@@ -16,6 +17,6 @@ router.get('/me', authMiddleware, (req, res) => {
   });
 
 // PUT /api/auth/update-profile
-router.put('/update-profile', authMiddleware, userController.updateProfile);
+router.put('/update-profile', authMiddlewareUpdate, userController.updateProfile);
   
 module.exports = router;
