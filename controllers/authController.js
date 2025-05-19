@@ -29,7 +29,7 @@ exports.register = async (req, res) => {
       return res.status(409).json({ error: 'User already exists with this email' });
     }
 
-    // Save new user
+    // Create user
     const hashedPassword = await bcrypt.hash(password, 10);
     const user = new User({
       email,
@@ -52,11 +52,21 @@ exports.register = async (req, res) => {
     });
     await session.save();
 
-    res.status(201).json({ message: 'Registration successful 🎉', token });
+    // Respond with token and user info
+    res.status(200).json({
+      message: 'Registration successful 🎉',
+      token,
+      user: {
+        id: user._id,
+        email: user.email,
+        full_name: user.full_name,
+      }
+    });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 };
+
 
 exports.login = async (req, res) => {
   const { email, password } = req.body;
