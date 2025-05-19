@@ -35,7 +35,6 @@ connectDB();
 
 app.use('/api/auth', authRoutes);
 app.use('/api', authRoutes);
-app.use('/api/user', userRoutes);
 const PORT = process.env.PORT || 3000;
 
 // Print local IP
