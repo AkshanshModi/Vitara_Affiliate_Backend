@@ -1,5 +1,5 @@
 const bcrypt = require('bcrypt');
-// const jwt = require('jsonwebtoken');
+const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 const User = require('../models/User');
 const Session = require('../models/Session');
@@ -7,25 +7,54 @@ const PasswordResetToken = require('../models/PasswordResetToken');
 
 exports.register = async (req, res) => {
   const { email, password, full_name, phone } = req.body;
-  console.log(req.body);
+
   try {
     // Basic validation
-    if (full_name == "" || full_name == null){
+    if (!full_name) {
       return res.status(401).json({ error: 'Full name field is required' });
-    } else if (email == "" || email == null){
+    }
+    if (!email) {
       return res.status(401).json({ error: 'Email field is required' });
-    } else if (phone == "" || phone == null){
+    }
+    if (!phone) {
       return res.status(401).json({ error: 'Phone number field is required' });
-    } else if (password == "" || password == null){
+    }
+    if (!password) {
       return res.status(401).json({ error: 'Password field is required' });
     }
 
+    // Check if email already exists
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(409).json({ error: 'User already exists with this email' });
+    }
+
+    // Save new user
     const hashedPassword = await bcrypt.hash(password, 10);
-    const user = new User({ email, password_hash: hashedPassword, full_name, phone });
+    const user = new User({
+      email,
+      password_hash: hashedPassword,
+      full_name,
+      phone
+    });
     await user.save();
-    res.status(201).json({ user });
+
+    // Generate token
+    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+
+    // Create session
+    const session = new Session({
+      user_id: user._id,
+      token,
+      ip_address: req.ip,
+      user_agent: req.headers['user-agent'],
+      expires_at: new Date(Date.now() + 3600000), // 1 hour
+    });
+    await session.save();
+
+    res.status(201).json({ message: 'Registration successful 🎉', token });
   } catch (err) {
-    res.status(401).json({ error: err.message });
+    res.status(500).json({ error: err.message });
   }
 };
 
@@ -44,11 +73,11 @@ exports.login = async (req, res) => {
       return res.status(401).json({ error: 'Invalid credentials' });
     } 
 
-    // const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
     const session = new Session({
       user_id: user._id,
-      //token,
+      token,
       ip_address: req.ip,
       user_agent: req.headers['user-agent'],
       expires_at: new Date(Date.now() + 3600000)
