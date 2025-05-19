@@ -6,4 +6,12 @@ router.post('/register', authController.register);
 router.post('/login', authController.login);
 router.post('/request-password-reset', authController.requestPasswordReset);
 
+router.get('/me', authMiddleware, (req, res) => {
+    res.json({
+      message: 'User details fetched successfully',
+      user: req.user
+    });
+  });
+  
+  module.exports = router;
 module.exports = router;

@@ -4,9 +4,6 @@ const crypto = require('crypto');
 const User = require('../models/User');
 const Session = require('../models/Session');
 const PasswordResetToken = require('../models/PasswordResetToken');
-const express = require('express');
-const router = express.Router();
-const authMiddleware = require('../middleware/authMiddleware');
 
 
 // MARK: REGISTRATION API
@@ -134,13 +131,3 @@ exports.requestPasswordReset = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
-
-
-// MARK: GET USER
-router.get('/me', authMiddleware, (req, res) => {
-  res.json({
-    message: 'User details fetched successfully',
-    user: req.user
-  });
-});
-module.exports = router;
