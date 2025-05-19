@@ -38,6 +38,7 @@ module.exports = (req, res, next) => {
   
     try {
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      console.log("File Decoded-------->", decoded)
       req.user = decoded; // Set req.user = { userId: ... }
       next();
     } catch (err) {

@@ -3,6 +3,7 @@ const User = require('../models/User');
 exports.updateProfile = async (req, res) => {
   try {
     const userId = req.user.userId; // Populated by auth middleware
+    console.log("USERID --------->", userId);
     const { full_name, phone } = req.body;
 
     // Validate
