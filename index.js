@@ -9,25 +9,52 @@ const cors = require('cors');
 dotenv.config();
 const app = express();
 
-// Allow requests from React frontend (default: http://localhost:3000)
+// // Allow requests from React frontend (default: http://localhost:3000)
+// const allowedOrigins = [
+//   'http://localhost:3000',
+//   'https://vitara-affiliate-backend.onrender.com',
+//   'https://kb01owfmq6ip.vitara.app',
+// ];
+// const corsOpts = {
+//   origin: '*',
+
+//   methods: [
+//     'GET',
+//     'POST',
+//   ],
+
+//   allowedHeaders: [
+//     'Content-Type','Authorization'
+//   ],
+// };
+// app.use(cors(corsOpts));
+
+const cors = require('cors');
+
 const allowedOrigins = [
   'http://localhost:3000',
   'https://vitara-affiliate-backend.onrender.com',
+  'https://kb010wfmq6ip.preview.vitara.app',
   'https://kb01owfmq6ip.vitara.app',
 ];
+
 const corsOpts = {
-  origin: '*',
-
-  methods: [
-    'GET',
-    'POST',
-  ],
-
-  allowedHeaders: [
-    'Content-Type','Authorization'
-  ],
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    } else {
+      return callback(new Error('Not allowed by CORS'));
+    }
+  },
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'sessionId'],
+  credentials: true,
 };
+
 app.use(cors(corsOpts));
+
 app.use(bodyParser.json());
 
 // Connect MongoDB
