@@ -4,7 +4,12 @@ const crypto = require('crypto');
 const User = require('../models/User');
 const Session = require('../models/Session');
 const PasswordResetToken = require('../models/PasswordResetToken');
+const express = require('express');
+const router = express.Router();
+const authMiddleware = require('../middleware/authMiddleware');
 
+
+// MARK: REGISTRATION API
 exports.register = async (req, res) => {
   const { email, password, full_name, phone } = req.body;
 
@@ -67,7 +72,7 @@ exports.register = async (req, res) => {
   }
 };
 
-
+// MARK: LOGIN API
 exports.login = async (req, res) => {
   const { email, password } = req.body;
   try {
@@ -114,6 +119,7 @@ exports.login = async (req, res) => {
 };
 
 
+// MARK: RESET PASSWORD
 exports.requestPasswordReset = async (req, res) => {
   const { email } = req.body;
   try {
@@ -128,3 +134,13 @@ exports.requestPasswordReset = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+
+
+// MARK: GET USER
+router.get('/me', authMiddleware, (req, res) => {
+  res.json({
+    message: 'User details fetched successfully',
+    user: req.user
+  });
+});
+module.exports = router;
