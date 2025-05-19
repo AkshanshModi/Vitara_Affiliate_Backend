@@ -29,8 +29,6 @@ const app = express();
 // };
 // app.use(cors(corsOpts));
 
-const cors = require('cors');
-
 const allowedOrigins = [
   'http://localhost:3000',
   'https://vitara-affiliate-backend.onrender.com',
