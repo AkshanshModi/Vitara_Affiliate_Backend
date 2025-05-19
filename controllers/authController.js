@@ -62,19 +62,23 @@ exports.login = async (req, res) => {
   const { email, password } = req.body;
   try {
     // Basic validation
-    if (email == "" || email == null){
+    if (!email) {
       return res.status(401).json({ error: 'Email field is required' });
-    } else if (password == "" || password == null){
+    }
+    if (!password) {
       return res.status(401).json({ error: 'Password field is required' });
     }
+
     // Functional validation
     const user = await User.findOne({ email });
     if (!user || !(await bcrypt.compare(password, user.password_hash))) {
       return res.status(401).json({ error: 'Invalid credentials' });
-    } 
+    }
 
+    // Generate JWT token
     const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
+    // Save session
     const session = new Session({
       user_id: user._id,
       token,
@@ -84,11 +88,21 @@ exports.login = async (req, res) => {
     });
     await session.save();
 
-    res.json({ message: 'Login Success 😊' });
+    // Send success response with token
+    res.json({
+      message: 'Login Success 🎉',
+      token, // include token in response
+      user: {
+        id: user._id,
+        email: user.email,
+        full_name: user.full_name,
+      }
+    });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 };
+
 
 exports.requestPasswordReset = async (req, res) => {
   const { email } = req.body;
