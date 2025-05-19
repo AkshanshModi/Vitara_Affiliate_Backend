@@ -24,7 +24,7 @@ const corsOpts = {
   ],
 
   allowedHeaders: [
-    'Content-Type','sessionId'
+    'Content-Type','Authorization'
   ],
 };
 app.use(cors(corsOpts));
