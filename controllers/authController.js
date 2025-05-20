@@ -13,22 +13,22 @@ exports.register = async (req, res) => {
   try {
     // Basic validation
     if (!full_name) {
-      return res.status(401).json({ error: 'Full name field is required' });
+      return res.status(400).json({ error: 'Full name field is required' });
     }
     if (!email) {
-      return res.status(401).json({ error: 'Email field is required' });
+      return res.status(400).json({ error: 'Email field is required' });
     }
     if (!phone) {
-      return res.status(401).json({ error: 'Phone number field is required' });
+      return res.status(400).json({ error: 'Phone number field is required' });
     }
     if (!password) {
-      return res.status(401).json({ error: 'Password field is required' });
+      return res.status(400).json({ error: 'Password field is required' });
     }
 
     // Check if email already exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
-      return res.status(409).json({ error: 'User already exists with this email' });
+      return res.status(400).json({ error: 'User already exists with this email' });
     }
 
     // Create user
@@ -75,16 +75,16 @@ exports.login = async (req, res) => {
   try {
     // Basic validation
     if (!email) {
-      return res.status(401).json({ error: 'Email field is required' });
+      return res.status(400).json({ error: 'Email field is required' });
     }
     if (!password) {
-      return res.status(401).json({ error: 'Password field is required' });
+      return res.status(400).json({ error: 'Password field is required' });
     }
 
     // Functional validation
     const user = await User.findOne({ email });
     if (!user || !(await bcrypt.compare(password, user.password_hash))) {
-      return res.status(401).json({ error: 'Invalid credentials' });
+      return res.status(400).json({ error: 'Invalid credentials' });
     }
 
     // Generate JWT token
