@@ -18,5 +18,8 @@ router.get('/me', authMiddleware, (req, res) => {
 
 // PUT /api/auth/update-profile
 router.put('/update-profile', authMiddlewareUpdate, userController.updateProfile);
+
+// Change Password
+router.post('/change-password', authMiddlewareUpdate, userController.changePassword);
   
 module.exports = router;
