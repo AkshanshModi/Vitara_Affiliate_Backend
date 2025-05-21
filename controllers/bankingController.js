@@ -47,7 +47,7 @@ exports.saveBankingInfo = async (req, res) => {
   };
 
 exports.getBankingInfo = async (req, res) => {
-  const userId = req.user.userId;
+  const userId = req.userId;
 
   try {
     const data = await BankingInfo.findOne({ user_id: userId });
