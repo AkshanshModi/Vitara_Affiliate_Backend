@@ -38,7 +38,7 @@ exports.saveBankingInfo = async (req, res) => {
         });
   
         await newBankingInfo.save();
-        res.status(201).json({ message: 'Banking details added successfully', data: newBankingInfo });
+        res.status(200).json({ message: 'Banking details added successfully', data: newBankingInfo });
       }
     } catch (err) {
       console.error('Banking info error:', err);
