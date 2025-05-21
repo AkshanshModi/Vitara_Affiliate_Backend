@@ -5,29 +5,10 @@ const connectDB = require('./db');
 const authRoutes = require('./routes/auth');
 const os = require('os');
 const cors = require('cors');
+const bankingRoutes = require('./routes/banking');
 
 dotenv.config();
 const app = express();
-
-// // Allow requests from React frontend (default: http://localhost:3000)
-// const allowedOrigins = [
-//   'http://localhost:3000',
-//   'https://vitara-affiliate-backend.onrender.com',
-//   'https://kb01owfmq6ip.vitara.app',
-// ];
-// const corsOpts = {
-//   origin: '*',
-
-//   methods: [
-//     'GET',
-//     'POST',
-//   ],
-
-//   allowedHeaders: [
-//     'Content-Type','Authorization'
-//   ],
-// };
-// app.use(cors(corsOpts));
 
 const allowedOrigins = [
   'http://localhost:3000',
@@ -52,6 +33,9 @@ connectDB();
 
 app.use('/api/auth', authRoutes);
 app.use('/api', authRoutes);
+app.use('/api', bankingRoutes);
+
+
 const PORT = process.env.PORT || 3000;
 
 // Print local IP
