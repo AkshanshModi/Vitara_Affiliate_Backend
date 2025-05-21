@@ -131,3 +131,21 @@ exports.requestPasswordReset = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+
+// MARK: SIGN-OUT
+exports.signout = async (req, res) => {
+  try {
+    const token = req.headers.authorization?.split(' ')[1];
+
+    if (!token) {
+      return res.status(401).json({ error: 'Authorization token required' });
+    }
+
+    // Remove session from database
+    await Session.findOneAndDelete({ token });
+
+    res.status(200).json({ message: 'Successfully signed out ✅' });
+  } catch (err) {
+    res.status(500).json({ error: 'Server error during signout' });
+  }
+};

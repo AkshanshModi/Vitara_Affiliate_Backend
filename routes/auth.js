@@ -21,5 +21,8 @@ router.put('/update-profile', authMiddlewareUpdate, userController.updateProfile
 
 // Change Password
 router.post('/change-password', authMiddlewareUpdate, userController.changePassword);
+
+// Signout route (requires token)
+router.post('/signout', authMiddleware, authController.signout);
   
 module.exports = router;
