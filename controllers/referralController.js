@@ -2,7 +2,7 @@ const ReferralLink = require('../models/ReferralLink');
 
 exports.getReferralLinksAndStats = async (req, res) => {
     try {
-      const userId = req.user._id;
+      const userId = req.userId;
   
       const referralLinks = await ReferralLink.find({ user_id: userId });
   
