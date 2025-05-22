@@ -54,6 +54,15 @@ exports.register = async (req, res) => {
     });
     await session.save();
 
+    // Create Referral Link
+    const ReferralLink = require('../models/ReferralLink');
+    const slug = full_name.toLowerCase().replace(/\s+/g, ''); // e.g. "Akshansh Kumar" -> "akshanshkumar"
+    const referralLink = new ReferralLink({
+      user_id: user._id,
+      slug,
+    });
+    await referralLink.save();
+
     // Respond with token and user info
     res.status(200).json({
       message: 'Registration successful 🎉',
