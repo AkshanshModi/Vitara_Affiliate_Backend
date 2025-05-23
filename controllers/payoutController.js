@@ -65,7 +65,7 @@ exports.getPayoutData = async (req, res) => {
   }
 };
 
-const requestWithdrawal = async (req, res) => {
+exports.requestWithdrawal = async (req, res) => {
     try {
       const userId = req.userId;
       const { amount, note } = req.body;
@@ -107,8 +107,4 @@ const requestWithdrawal = async (req, res) => {
       console.error('Withdrawal request error:', error);
       res.status(500).json({ error: 'Server error' });
     }
-  };
-  
-  module.exports = {
-    requestWithdrawal
   };
