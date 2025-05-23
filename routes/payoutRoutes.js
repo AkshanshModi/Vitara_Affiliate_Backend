@@ -4,6 +4,6 @@ const payoutController = require('../controllers/payoutController');
 const authMiddlewareUserID = require('../middleware/authMiddlewareUserID');
 
 router.get('/data', authMiddlewareUserID, payoutController.getPayoutData);
-router.post('/request', payoutController, payoutController.requestWithdrawal);
+router.post('/request', authMiddlewareUserID, payoutController.requestWithdrawal);
 
 module.exports = router;
