@@ -64,3 +64,51 @@ exports.getPayoutData = async (req, res) => {
     res.status(500).json({ message: 'Server error', error: err.message });
   }
 };
+
+const requestWithdrawal = async (req, res) => {
+    try {
+      const userId = req.userId;
+      const { amount, note } = req.body;
+  
+      // Validate amount
+      if (!amount || isNaN(amount) || amount < 50) {
+        return res.status(400).json({ error: 'Minimum withdrawal amount is $50.' });
+      }
+  
+      const user = await User.findById(userId);
+  
+      if (!user) return res.status(400).json({ error: 'User not found' });
+  
+      if (user.availableBalance < amount) {
+        return res.status(400).json({ error: 'Insufficient balance.' });
+      }
+  
+      const balanceBefore = user.availableBalance;
+      const balanceAfter = balanceBefore - amount;
+  
+      // Deduct balance and save withdrawal
+      user.availableBalance = balanceAfter;
+      await user.save();
+  
+      const withdrawal = new Withdrawal({
+        userId,
+        amount,
+        status: 'Pending',
+        note,
+        createdAt: new Date(),
+        balanceBefore,
+        balanceAfter
+      });
+  
+      await withdrawal.save();
+  
+      res.status(201).json({ message: 'Withdrawal requested successfully.', withdrawal });
+    } catch (error) {
+      console.error('Withdrawal request error:', error);
+      res.status(500).json({ error: 'Server error' });
+    }
+  };
+  
+  module.exports = {
+    requestWithdrawal
+  };
