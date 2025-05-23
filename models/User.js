@@ -8,6 +8,8 @@ const userSchema = new mongoose.Schema({
   profile_image_url: String,
   remember_token: String,
   email_verified_at: Date,
+  availableBalance: { type: Number, default: 0 },
+  totalCommissionEarned: { type: Number, default: 0 },
   created_at: { type: Date, default: Date.now },
   updated_at: { type: Date, default: Date.now }
 });

@@ -7,6 +7,7 @@ const os = require('os');
 const cors = require('cors');
 const bankingRoutes = require('./routes/banking');
 const referralRoutes = require('./routes/referralRoutes');
+const payoutRoutes = require('./routes/payoutRoutes');
 
 dotenv.config();
 const app = express();
@@ -36,6 +37,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api', authRoutes);
 app.use('/api', bankingRoutes);
 app.use('/api/referrals', referralRoutes);
+app.use('/api/payouts', payoutRoutes);
 
 
 const PORT = process.env.PORT || 3000;
