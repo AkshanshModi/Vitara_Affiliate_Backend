@@ -57,7 +57,7 @@ exports.register = async (req, res) => {
     // Create Referral Link
     const ReferralLink = require('../models/ReferralLink');
     const crypto = require('crypto');
-    const slug = await generateUniqueSlug(baseSlug, 10);
+    const slug = await generateUniqueSlug();
 
     const referralLink = new ReferralLink({
       user_id: user._id,
@@ -81,7 +81,7 @@ exports.register = async (req, res) => {
 };
 
 // Generate Unique Slug
-const generateUniqueSlug = async (baseSlug = '', length = 10) => {
+const generateUniqueSlug = async (length = 10) => {
   let slug;
   let exists = true;
 
@@ -90,7 +90,7 @@ const generateUniqueSlug = async (baseSlug = '', length = 10) => {
     const randomPart = crypto.randomBytes(Math.ceil(length / 2)).toString('hex').slice(0, length);
 
     // Combine with baseSlug (e.g., user name)
-    slug = `${baseSlug}${randomPart}`;
+    slug = `${randomPart}`;
 
     // Check in DB if the slug already exists
     const existing = await ReferralLink.findOne({ slug });
