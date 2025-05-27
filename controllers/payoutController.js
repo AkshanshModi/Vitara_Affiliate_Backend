@@ -44,6 +44,7 @@ exports.getPayoutData = async (req, res) => {
     const history = withdrawals.map(w => ({
       date: moment(w.createdAt).format('MMM D, YYYY'),
       time: moment(w.createdAt).format('h:mm A'),
+      createAt: w.createdAt,
       amount: w.amount,
       status: w.status, // Completed, Pending, Cancelled
       balanceBefore: w.balanceBefore,
