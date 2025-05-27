@@ -57,27 +57,7 @@ exports.register = async (req, res) => {
     // Create Referral Link
     const ReferralLink = require('../models/ReferralLink');
     const crypto = require('crypto');
-
-    const slug = async (baseSlug = '', length = 10) => {
-    let slug;
-    let exists = true;
-
-    do {
-      // Generate a random alphanumeric string
-      const randomPart = crypto.randomBytes(Math.ceil(length / 2)).toString('hex').slice(0, length);
-
-      // Combine with baseSlug (e.g., user name)
-      slug = `${baseSlug}${randomPart}`;
-
-      // Check in DB if the slug already exists
-      const existing = await ReferralLink.findOne({ slug });
-
-      exists = !!existing; // true if found, false if unique
-    } while (exists); // Keep looping until a unique slug is found
-
-  return slug;
-};
-
+    const slug = await generateUniqueSlug(baseSlug, 10);
 
     const referralLink = new ReferralLink({
       user_id: user._id,
@@ -98,6 +78,27 @@ exports.register = async (req, res) => {
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
+};
+
+// Generate Unique Slug
+const generateUniqueSlug = async (baseSlug = '', length = 10) => {
+  let slug;
+  let exists = true;
+
+  do {
+    // Generate a random alphanumeric string
+    const randomPart = crypto.randomBytes(Math.ceil(length / 2)).toString('hex').slice(0, length);
+
+    // Combine with baseSlug (e.g., user name)
+    slug = `${baseSlug}${randomPart}`;
+
+    // Check in DB if the slug already exists
+    const existing = await ReferralLink.findOne({ slug });
+
+    exists = !!existing; // true if found, false if unique
+  } while (exists); // Keep looping until a unique slug is found
+
+  return slug;
 };
 
 // MARK: LOGIN API
