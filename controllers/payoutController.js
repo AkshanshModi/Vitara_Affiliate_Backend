@@ -65,11 +65,12 @@ exports.getPayoutData = async (req, res) => {
   }
 };
 
-exports.requestPayout = async (req, res) => {
+exports.requestWithdrawal = async (req, res) => {
   try {
-    const userId = req.user._id;
-    const { amount, note } = req.body;
+    const userId = req.userId;
+    const { amount, notes } = req.body;
 
+    // Validate amount
     if (!amount || isNaN(amount)) {
       return res.status(400).json({ error: 'Amount is required and must be a number.' });
     }
@@ -79,9 +80,8 @@ exports.requestPayout = async (req, res) => {
     }
 
     const user = await User.findById(userId);
-
     if (!user) {
-      return res.status(404).json({ error: 'User not found.' });
+      return res.status(400).json({ error: 'User not found.' });
     }
 
     if (user.availableBalance < amount) {
@@ -91,29 +91,33 @@ exports.requestPayout = async (req, res) => {
     const balanceBefore = user.availableBalance;
     const balanceAfter = balanceBefore - amount;
 
-    const payout = new Withdrawal({
+    // Create withdrawal record
+    const withdrawal = new Withdrawal({
       user_id: userId,
       amount,
+      balanceBefore,
+      balanceAfter,
+      notes: notes || '',
       status: 'Pending',
-      balanceBefore: balanceBefore,
-      balanceAfter: balanceAfter,
-      notes: note || '',
       createdAt: new Date(),
     });
 
-    await payout.save();
+    await withdrawal.save();
 
-    // Deduct balance immediately
+    // Deduct balance from user
     user.availableBalance = balanceAfter;
     await user.save();
 
-    res.json({
+    return res.status(200).json({
       success: true,
-      message: 'Payout request submitted successfully.',
-      payout,
+      message: 'Withdrawal request submitted successfully.',
+      withdrawal,
     });
   } catch (err) {
-    console.error('Payout request error:', err);
-    res.status(500).json({ error: 'Server error', details: err.message });
+    console.error('Withdrawal request error:', err);
+    return res.status(500).json({
+      error: 'Server error',
+      details: err.message,
+    });
   }
 };
