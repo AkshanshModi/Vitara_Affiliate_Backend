@@ -1,7 +1,6 @@
 const moment = require('moment');
 const Withdrawal = require('../models/Withdrawal');
 const User = require('../models/User');
-const Payout = require('../models/Payout');
 
 exports.getPayoutData = async (req, res) => {
   try {
@@ -92,14 +91,14 @@ exports.requestPayout = async (req, res) => {
     const balanceBefore = user.availableBalance;
     const balanceAfter = balanceBefore - amount;
 
-    const payout = new Payout({
+    const payout = new Withdrawal({
       user_id: userId,
       amount,
       status: 'Pending',
-      balance_before: balanceBefore,
-      balance_after: balanceAfter,
-      note: note || '',
-      created_at: new Date(),
+      balanceBefore: balanceBefore,
+      balanceAfter: balanceAfter,
+      notes: note || '',
+      createdAt: new Date(),
     });
 
     await payout.save();
