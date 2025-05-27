@@ -58,7 +58,7 @@ exports.register = async (req, res) => {
     const ReferralLink = require('../models/ReferralLink');
     const crypto = require('crypto');
 
-    const generateUniqueSlug = async (baseSlug = '', length = 10) => {
+    const slug = async (baseSlug = '', length = 10) => {
     let slug;
     let exists = true;
 
@@ -81,7 +81,7 @@ exports.register = async (req, res) => {
 
     const referralLink = new ReferralLink({
       user_id: user._id,
-      generateUniqueSlug,
+      slug,
     });
     await referralLink.save();
 
