@@ -57,7 +57,7 @@ exports.register = async (req, res) => {
     // Create Referral Link
     const ReferralLink = require('../models/ReferralLink');
     const crypto = require('crypto');
-    const baseSlug = full_name + user._id.toLowerCase().replace(/\s+/g, '');
+    const baseSlug = full_name.toLowerCase().replace(/\s+/g, '');
     const slug = await generateUniqueSlug(baseSlug, 10);
 
     const referralLink = new ReferralLink({
