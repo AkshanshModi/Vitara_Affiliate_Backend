@@ -68,7 +68,7 @@ exports.getPayoutData = async (req, res) => {
 exports.requestWithdrawal = async (req, res) => {
   try {
     const userId = req.userId;
-    const { amount, notes } = req.body;
+    const { amount, note } = req.body;
 
     // Validate amount
     if (!amount || isNaN(amount)) {
@@ -97,7 +97,7 @@ exports.requestWithdrawal = async (req, res) => {
       amount,
       balanceBefore,
       balanceAfter,
-      notes: notes || '',
+      notes: note || '',
       status: 'Pending',
       createdAt: new Date(),
     });
