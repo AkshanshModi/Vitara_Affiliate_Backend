@@ -1,6 +1,7 @@
 const moment = require('moment');
 const Withdrawal = require('../models/Withdrawal');
 const User = require('../models/User');
+const Payout = require('../models/Payout');
 
 exports.getPayoutData = async (req, res) => {
   try {
@@ -65,46 +66,55 @@ exports.getPayoutData = async (req, res) => {
   }
 };
 
-exports.requestWithdrawal = async (req, res) => {
-    try {
-      const userId = req.userId;
-      const { amount, note } = req.body;
-  
-      // Validate amount
-      if (!amount || isNaN(amount) || amount < 50) {
-        return res.status(400).json({ error: 'Minimum withdrawal amount is $50.' });
-      }
-  
-      const user = await User.findById(userId);
-  
-      if (!user) return res.status(400).json({ error: 'User not found' });
-  
-      if (user.availableBalance < amount) {
-        return res.status(400).json({ error: 'Insufficient balance.' });
-      }
-  
-      const balanceBefore = user.availableBalance;
-      const balanceAfter = balanceBefore - amount;
-  
-      // Deduct balance and save withdrawal
-      user.availableBalance = balanceAfter;
-      await user.save();
-  
-      const withdrawal = new Withdrawal({
-        userId,
-        amount,
-        status: 'Pending',
-        note,
-        createdAt: new Date(),
-        balanceBefore,
-        balanceAfter
-      });
-  
-      await withdrawal.save();
-  
-      res.status(201).json({ message: 'Withdrawal requested successfully.', withdrawal });
-    } catch (error) {
-      console.error('Withdrawal request error:', error);
-      res.status(500).json({ error: 'Server error' });
+exports.requestPayout = async (req, res) => {
+  try {
+    const userId = req.user._id;
+    const { amount, note } = req.body;
+
+    if (!amount || isNaN(amount)) {
+      return res.status(400).json({ error: 'Amount is required and must be a number.' });
     }
-  };
+
+    if (amount < 50) {
+      return res.status(400).json({ error: 'Minimum withdrawal amount is $50.' });
+    }
+
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ error: 'User not found.' });
+    }
+
+    if (user.availableBalance < amount) {
+      return res.status(400).json({ error: 'Insufficient balance for withdrawal.' });
+    }
+
+    const balanceBefore = user.availableBalance;
+    const balanceAfter = balanceBefore - amount;
+
+    const payout = new Payout({
+      user_id: userId,
+      amount,
+      status: 'Pending',
+      balance_before: balanceBefore,
+      balance_after: balanceAfter,
+      note: note || '',
+      created_at: new Date(),
+    });
+
+    await payout.save();
+
+    // Deduct balance immediately
+    user.availableBalance = balanceAfter;
+    await user.save();
+
+    res.json({
+      success: true,
+      message: 'Payout request submitted successfully.',
+      payout,
+    });
+  } catch (err) {
+    console.error('Payout request error:', err);
+    res.status(500).json({ error: 'Server error', details: err.message });
+  }
+};
