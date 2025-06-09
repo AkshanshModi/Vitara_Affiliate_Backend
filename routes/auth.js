@@ -10,6 +10,7 @@ router.post('/login', authController.login);
 router.post('/request-password-reset', authController.requestPasswordReset);
 
 router.get('/profile', authMiddleware, (req, res) => {
+  console.log('User profile accessed:', req.user);
     res.json({
       message: 'User details fetched successfully',
       user: req.user

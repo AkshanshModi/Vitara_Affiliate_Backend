@@ -170,7 +170,7 @@ exports.requestPasswordReset = async (req, res) => {
   }
 };
 
-// MARK: SIGN-OUT
+// MARK: SIGN-OUT 
 exports.signout = async (req, res) => {
   try {
     const token = req.headers.authorization?.split(' ')[1];
@@ -187,3 +187,5 @@ exports.signout = async (req, res) => {
     res.status(500).json({ error: 'Server error during signout' });
   }
 };
+
+
